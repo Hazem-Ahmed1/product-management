@@ -1,14 +1,8 @@
-/* ================================================================
-   LOGIN — Component-scoped styles
-   All colour tokens come from :root in styles.css
-   ================================================================ */
-
 :host {
   display: block;
   min-height: 100vh;
 }
 
-/* ── Page wrapper ─────────────────────────────────────────────── */
 .login-page {
   display: flex;
   align-items: center;
@@ -18,7 +12,6 @@
   padding: 1.5rem;
 }
 
-/* ── Card ─────────────────────────────────────────────────────── */
 .login-card {
   display: flex;
   width: 100%;
@@ -30,7 +23,6 @@
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
 }
 
-/* ── Form Panel (left) ────────────────────────────────────────── */
 .login-form-panel {
   flex: 1;
   padding: 3.5rem 3rem;
@@ -39,7 +31,6 @@
   justify-content: center;
 }
 
-/* Brand */
 .login-brand {
   display: flex;
   align-items: center;
@@ -60,7 +51,6 @@
   letter-spacing: -0.3px;
 }
 
-/* Welcome / heading */
 .login-welcome {
   font-size: 0.85rem;
   color: var(--text-muted);
@@ -76,7 +66,6 @@
   line-height: 1.15;
 }
 
-/* ── Alert ─────────────────────────────────────────────────────── */
 .login-alert {
   display: flex;
   align-items: center;
@@ -91,7 +80,6 @@
   color: var(--primary);
 }
 
-/* Info variant — used for session-expired notice */
 .login-alert--info {
   background: #f0f7ff;
   border-color: rgba(59, 130, 246, 0.3);
@@ -99,7 +87,6 @@
   color: #1d4ed8;
 }
 
-/* ── Form Fields ────────────────────────────────────────────────── */
 .login-field {
   margin-bottom: 1.1rem;
 }
@@ -149,7 +136,6 @@
   background: #fff8f8;
 }
 
-/* Password wrapper */
 .login-field__password-wrap {
   position: relative;
 }
@@ -185,7 +171,6 @@
   border-radius: 3px;
 }
 
-/* Validation error */
 .login-field__error {
   font-size: 0.78rem;
   color: var(--primary);
@@ -193,21 +178,6 @@
   margin-bottom: 0;
 }
 
-/* Forgot password */
-.login-forgot {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.login-forgot:hover,
-.login-forgot:focus {
-  color: var(--primary);
-  text-decoration: underline;
-}
-
-/* ── Submit button (extends global .btn-primary-custom) ─────────── */
 .login-submit {
   width: 100%;
   margin-top: 0.5rem;
@@ -248,30 +218,6 @@
   transform: none;
 }
 
-/* ── Register link ──────────────────────────────────────────────── */
-.login-register {
-  font-size: 0.83rem;
-  color: var(--text-muted);
-  text-align: center;
-  margin-top: 1.5rem;
-  margin-bottom: 0;
-}
-
-.login-register__link {
-  color: var(--primary);
-  font-weight: 700;
-  text-decoration: none;
-  margin-left: 0.25rem;
-  transition: color 0.2s;
-}
-
-.login-register__link:hover,
-.login-register__link:focus {
-  color: #c13535;
-  text-decoration: underline;
-}
-
-/* ── Illustration Panel (right) ────────────────────────────────── */
 .login-illustration {
   flex: 1;
   background: var(--primary);
@@ -282,15 +228,6 @@
   justify-content: center;
 }
 
-/* Subtle radial shading to match the design */
-.login-illustration::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 70% 30%, rgba(255, 255, 255, 0.08) 0%, transparent 60%);
-  pointer-events: none;
-}
-
 .login-illustration__img {
   width: 100%;
   height: 100%;
@@ -299,7 +236,6 @@
   display: block;
 }
 
-/* ── Responsive ─────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .login-illustration {
     display: none;

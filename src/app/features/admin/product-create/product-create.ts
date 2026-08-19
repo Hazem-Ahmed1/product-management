@@ -10,7 +10,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { CurrencyPipe } from '@angular/common';
+
 import { toSignal } from '@angular/core/rxjs-interop';
 import { EMPTY, Subject } from 'rxjs';
 import {
@@ -29,10 +29,11 @@ import {
 import { Breadcrumb } from '../../../shared/components/breadcrumb/breadcrumb';
 import { CustomSelect } from '../../../shared/components/custom-select/custom-select';
 import { ToastService } from '../../../shared/components/toast/toast.service';
+import { ProductLivePreview } from './components/product-live-preview/product-live-preview';
 
 @Component({
   selector: 'app-product-create',
-  imports: [ReactiveFormsModule, RouterLink, CurrencyPipe, Breadcrumb, CustomSelect],
+  imports: [ReactiveFormsModule, RouterLink, Breadcrumb, CustomSelect, ProductLivePreview],
   templateUrl: './product-create.html',
   styleUrl: './product-create.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -140,12 +141,5 @@ export class ProductCreate {
     if (c.errors['pattern'])     return 'Must be a whole number.';
     if (c.errors['serverError']) return c.errors['serverError'] as string;
     return 'Invalid value.';
-  }
-
-  get stockLevel(): 'out' | 'low' | 'available' {
-    const s = Number(this.preview()?.stock ?? 0);
-    if (s === 0)   return 'out';
-    if (s <= 10)   return 'low';
-    return 'available';
   }
 }

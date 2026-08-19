@@ -111,14 +111,4 @@ describe('ProductCreate Form Behavior', () => {
     expect(router.navigate).not.toHaveBeenCalled();
   });
 
-  it('should compute stock level accurately for preview', () => {
-    component.form.controls.stock.setValue(0);
-    expect(component.stockLevel).toBe('out');
-    
-    component.form.controls.stock.setValue(5);
-    expect(component.stockLevel).toBe('low');
-    
-    component.form.controls.stock.setValue(20);
-    expect(component.stockLevel).toBe('available');
-  });
 });

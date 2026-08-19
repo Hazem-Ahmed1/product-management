@@ -157,59 +157,6 @@
     </section>
 
     <!-- ── Live Preview column ──────────────────────────────────── -->
-    <aside class="create-preview-panel" aria-label="Live preview" aria-live="polite">
-      <p class="preview-label">
-        <i class="fa-solid fa-eye" aria-hidden="true"></i> LIVE PREVIEW
-      </p>
-
-      <div class="preview-card">
-        <!-- Image placeholder -->
-        <div class="preview-card__image" aria-hidden="true">
-          <svg viewBox="0 0 180 120" xmlns="http://www.w3.org/2000/svg" class="preview-card__svg">
-            <rect width="180" height="120" fill="#ebebeb"/>
-            <circle cx="65" cy="52" r="14" fill="none" stroke="#bbb" stroke-width="2"/>
-            <polyline points="30,90 70,55 100,80 130,45 155,90" fill="none" stroke="#bbb" stroke-width="2"/>
-          </svg>
-        </div>
-
-        <!-- Card body -->
-        <div class="preview-card__body">
-          <!-- Stock badge -->
-          <div
-            class="preview-card__stock"
-            [class.preview-card__stock--out]="stockLevel === 'out'"
-            [class.preview-card__stock--low]="stockLevel === 'low'"
-            [class.preview-card__stock--ok]="stockLevel === 'available'"
-          >
-            @if (stockLevel === 'out') {
-              <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> Out of stock
-            } @else if (stockLevel === 'low') {
-              <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
-              {{ preview().stock ?? 0 }} in stock
-            } @else {
-              <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
-              {{ preview().stock ?? 0 }} in stock
-            }
-          </div>
-
-          <p class="preview-card__name">
-            {{ preview().name || 'Product name' }}
-          </p>
-
-          <p class="preview-card__desc">
-            {{ preview().description || 'No description provided.' }}
-          </p>
-
-          <p class="preview-card__price">
-            {{ (preview().price ?? 0) | currency: (preview().currency || 'USD') }}
-          </p>
-        </div>
-      </div>
-
-      <p class="preview-note">
-        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-        This is how the product will appear in the storefront grid.
-      </p>
-    </aside>
+    <app-product-live-preview [product]="preview()" />
   </div>
 </div>
