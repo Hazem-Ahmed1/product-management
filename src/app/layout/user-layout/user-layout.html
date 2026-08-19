@@ -1,0 +1,16 @@
+<div class="store-shell">
+  <header class="store-header">
+    <a routerLink="/products" class="store-brand" aria-label="ShopAdmin products"
+      ><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i> ShopAdmin</a
+    >
+    <nav aria-label="Store navigation">
+      <a routerLink="/admin/products" class="store-switch"
+        ><i class="fa-solid fa-table-list" aria-hidden="true"></i> Admin View</a
+      >
+    </nav>
+    <span class="store-user" aria-label="Signed in as {{ currentUser()?.name ?? 'User' }}">{{
+      currentUser()?.name ?? 'User'
+    }}</span>
+  </header>
+  <main class="store-content"><router-outlet /></main>
+</div>

@@ -1,0 +1,58 @@
+<section class="catalog" aria-labelledby="catalog-title">
+  <div class="catalog__header">
+    <div>
+      <h1 id="catalog-title">Explore products</h1>
+      <p>Browse available products from our catalog.</p>
+    </div>
+    @if (meta(); as metaObj) {
+      <p class="catalog__count">
+        Showing {{ metaObj.from ?? 0 }}–{{ metaObj.to ?? 0 }} of {{ metaObj.total }} products
+      </p>
+    }
+  </div>
+  <div class="catalog__search-group">
+    <label class="catalog__search" for="catalog-search"
+      ><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i
+      ><span class="visually-hidden">Search products</span
+      ><input
+        id="catalog-search"
+        type="search"
+        [value]="search()"
+        (input)="onSearch($event)"
+        placeholder="Search products by name, SKU, or slug"
+        autocomplete="off"
+    /></label>
+    @if (search()) {
+      <button type="button" class="catalog__reset-btn" (click)="clearSearch()">
+        Reset <span aria-hidden="true">&times;</span>
+      </button>
+    }
+  </div>
+  @if (loadState() === 'error') {
+    <div class="catalog__error" role="alert">
+      <span>{{ errorMessage() }}</span
+      ><button type="button" (click)="retry()">Try again</button>
+    </div>
+  }
+  @if (loadState() === 'loading') {
+    <div class="catalog__loading"><app-loading-spinner message="Products are loading…" /></div>
+  } @else if (loadState() === 'success') {
+    @if (productsList().length) {
+      <div class="catalog__grid">
+        @for (product of productsList(); track product.id) {
+          <app-product-card [product]="product" />
+        }
+      </div>
+    } @else {
+      <div class="catalog__empty" role="status">
+        <i class="fa-solid fa-box-open" aria-hidden="true"></i>
+        <p>No active products found.</p>
+      </div>
+    }
+  }
+  @if (meta(); as metaObj) {
+    @if (metaObj.last_page > 1) {
+      <app-product-pagination [meta]="metaObj" (pageChange)="onPageChange($event)" />
+    }
+  }
+</section>

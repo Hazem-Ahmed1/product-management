@@ -1,0 +1,162 @@
+.shop-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--admin-border);
+  border-radius: 18px;
+  background: var(--white);
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+  container-type: inline-size;
+}
+.shop-card-image {
+  position: relative;
+  display: grid;
+  width: 100%;
+  aspect-ratio: 1.45 / 1;
+  place-items: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f4f4f2, #e9e9e7);
+  color: var(--text-muted);
+  font-size: 2rem;
+}
+.shop-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+.shop-card:hover .shop-card-image img {
+  transform: scale(1.04);
+}
+
+.shop-card-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 1rem;
+}
+.shop-card__summary {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.65rem;
+}
+.shop-card-name {
+  display: block;
+  overflow: hidden;
+  color: #17233d;
+  font-size: 1rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.shop-card__text {
+  /* guarantees name + description area is always the same height */
+  flex: 1;
+  min-width: 0; /* prevent text overflow breaking layout */
+}
+.shop-card__description {
+  display: -webkit-box;
+  overflow: hidden;
+  /* 2 lines × font-size 0.82rem × line-height 1.35 ≈ 2.21rem — always reserve this */
+  min-height: calc(0.82rem * 1.35 * 2);
+  margin: 0.35rem 0 0;
+  color: #64748b;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.shop-price-new {
+  flex: 0 0 auto;
+  margin: 0;
+  color: var(--primary);
+  font-size: 1rem;
+  font-weight: 700;
+}
+.shop-card__stock {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 0.45rem;
+  margin: 1rem 0;
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.shop-card__stock--available {
+  background: #ecfdf5;
+  color: #047857;
+}
+.shop-card__stock--low {
+  background: #fef3c7;
+  color: #a16207;
+}
+.shop-card__stock--critical {
+  background: #ffedd5;
+  color: #c2410c;
+}
+.shop-card__stock--out {
+  background: var(--primary-bg);
+  color: var(--primary-dark);
+}
+.shop-card-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: auto;
+  border-radius: 10px;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, var(--primary), #ff5a5f);
+  color: var(--white);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.shop-card-view span {
+  flex: 1;
+  text-align: center;
+}
+.shop-card-view:hover,
+.shop-card-view:focus-visible {
+  color: var(--white);
+  filter: brightness(0.96);
+}
+.shop-card-view:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+/* ── Container Queries for extremely narrow responsive grids ── */
+@container (max-width: 240px) {
+  .shop-card-info {
+    padding: 0.85rem;
+  }
+  .shop-card__summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+  .shop-card__text {
+    width: 100%;
+  }
+  .shop-card__stock {
+    font-size: 0.75rem;
+    padding: 0.45rem 0.55rem;
+    margin: 0.75rem 0;
+  }
+  .shop-card-view {
+    padding: 0.6rem;
+    gap: 0.4rem;
+  }
+  .shop-card-view span {
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+  .shop-card-view i.fa-arrow-right {
+    display: none;
+  }
+
+}
