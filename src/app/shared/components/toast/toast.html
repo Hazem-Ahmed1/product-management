@@ -1,0 +1,19 @@
+<div class="toast-container" aria-live="polite">
+  @for (toast of toasts(); track toast.id) {
+    <div class="toast" [class]="'toast--' + toast.type" role="alert">
+      <div class="toast__icon">
+        @if (toast.type === 'success') {
+          <i class="fa-solid fa-circle-check"></i>
+        } @else if (toast.type === 'error') {
+          <i class="fa-solid fa-circle-exclamation"></i>
+        } @else {
+          <i class="fa-solid fa-circle-info"></i>
+        }
+      </div>
+      <p class="toast__message">{{ toast.message }}</p>
+      <button type="button" class="toast__close" aria-label="Close" (click)="close(toast.id)">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  }
+</div>
