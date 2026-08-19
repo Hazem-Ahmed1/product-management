@@ -1,0 +1,215 @@
+<div class="create-page">
+  <app-breadcrumb [items]="breadcrumb" />
+
+  <!-- Page heading -->
+  <header class="create-page__header">
+    <div class="create-page__mode-badge">
+      <i class="fa-solid fa-shield-halved" aria-hidden="true"></i> ADMIN MODE
+    </div>
+    <h1 class="create-page__title">Create a product</h1>
+    <p class="create-page__subtitle">
+      Product images are generated automatically —
+      <span class="create-page__subtitle-em">no upload needed.</span>
+    </p>
+  </header>
+
+  <div class="create-layout">
+    <!-- ── Form column ──────────────────────────────────────────── -->
+    <section class="create-form-panel" aria-label="Product form">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+        <!-- Server error banner -->
+        @if (serverError()) {
+          <div class="form-server-error" role="alert" aria-live="assertive">
+            <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+            {{ serverError() }}
+          </div>
+        }
+
+        <!-- Product name -->
+        <div class="form-field" [class.form-field--error]="isInvalid('name')">
+          <label class="form-label" for="f-name">
+            Product name <span class="form-required" aria-hidden="true">*</span>
+          </label>
+          <input
+            id="f-name"
+            type="text"
+            class="form-input"
+            formControlName="name"
+            placeholder="e.g. Wireless Mechanical Keyboard"
+            autocomplete="off"
+            [attr.aria-invalid]="isInvalid('name')"
+            aria-describedby="f-name-err"
+          />
+          @if (isInvalid('name')) {
+            <p class="form-error-msg" id="f-name-err" role="alert">{{ errorFor('name') }}</p>
+          }
+        </div>
+
+        <!-- Description -->
+        <div class="form-field" [class.form-field--error]="isInvalid('description')">
+          <label class="form-label" for="f-desc">Description</label>
+          <textarea
+            id="f-desc"
+            class="form-input form-textarea"
+            formControlName="description"
+            placeholder="Short, customer-facing description…"
+            rows="4"
+            aria-describedby="f-desc-err"
+          ></textarea>
+          @if (isInvalid('description')) {
+            <p class="form-error-msg" id="f-desc-err" role="alert">{{ errorFor('description') }}</p>
+          }
+        </div>
+
+        <!-- Price / Currency / Stock row -->
+        <div class="form-row">
+          <div class="form-field" [class.form-field--error]="isInvalid('price')">
+            <label class="form-label" for="f-price">
+              Price <span class="form-required" aria-hidden="true">*</span>
+            </label>
+            <div class="form-input-prefix">
+              <span class="form-prefix-icon" aria-hidden="true">
+                <i class="fa-solid fa-dollar-sign"></i>
+              </span>
+              <input
+                id="f-price"
+                type="number"
+                class="form-input form-input--prefixed"
+                formControlName="price"
+                min="0"
+                step="0.01"
+                placeholder="0.00"
+                [attr.aria-invalid]="isInvalid('price')"
+                aria-describedby="f-price-err"
+              />
+            </div>
+            @if (isInvalid('price')) {
+              <p class="form-error-msg" id="f-price-err" role="alert">{{ errorFor('price') }}</p>
+            }
+          </div>
+
+          <div class="form-field" [class.form-field--error]="isInvalid('currency')">
+            <label class="form-label">Currency</label>
+            <app-custom-select
+              [options]="currencyOptions"
+              [value]="form.controls.currency.value"
+              label="Select currency"
+              (selectionChange)="setCurrency($event)"
+            />
+          </div>
+
+          <div class="form-field" [class.form-field--error]="isInvalid('stock')">
+            <label class="form-label" for="f-stock">
+              Stock quantity <span class="form-required" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="f-stock"
+              type="number"
+              class="form-input"
+              formControlName="stock"
+              min="0"
+              step="1"
+              placeholder="0"
+              [attr.aria-invalid]="isInvalid('stock')"
+              aria-describedby="f-stock-err"
+            />
+            @if (isInvalid('stock')) {
+              <p class="form-error-msg" id="f-stock-err" role="alert">{{ errorFor('stock') }}</p>
+            }
+          </div>
+        </div>
+
+        <!-- Active toggle -->
+        <div class="form-field form-field--toggle">
+          <label class="form-toggle" for="f-active">
+            <input
+              id="f-active"
+              type="checkbox"
+              class="form-toggle__input"
+              formControlName="is_active"
+            />
+            <span class="form-toggle__track" aria-hidden="true"></span>
+            <span class="form-toggle__label">
+              {{ form.get('is_active')?.value ? 'Active — visible in the storefront' : 'Inactive — hidden from storefront' }}
+            </span>
+          </label>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="btn-submit"
+            [disabled]="isLoading()"
+            [attr.aria-busy]="isLoading()"
+          >
+            @if (isLoading()) {
+              <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Saving…
+            } @else {
+              <i class="fa-solid fa-plus" aria-hidden="true"></i> Create product
+            }
+          </button>
+          <a routerLink="/admin/products" class="btn-cancel">Cancel</a>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- ── Live Preview column ──────────────────────────────────── -->
+    <aside class="create-preview-panel" aria-label="Live preview" aria-live="polite">
+      <p class="preview-label">
+        <i class="fa-solid fa-eye" aria-hidden="true"></i> LIVE PREVIEW
+      </p>
+
+      <div class="preview-card">
+        <!-- Image placeholder -->
+        <div class="preview-card__image" aria-hidden="true">
+          <svg viewBox="0 0 180 120" xmlns="http://www.w3.org/2000/svg" class="preview-card__svg">
+            <rect width="180" height="120" fill="#ebebeb"/>
+            <circle cx="65" cy="52" r="14" fill="none" stroke="#bbb" stroke-width="2"/>
+            <polyline points="30,90 70,55 100,80 130,45 155,90" fill="none" stroke="#bbb" stroke-width="2"/>
+          </svg>
+        </div>
+
+        <!-- Card body -->
+        <div class="preview-card__body">
+          <!-- Stock badge -->
+          <div
+            class="preview-card__stock"
+            [class.preview-card__stock--out]="stockLevel === 'out'"
+            [class.preview-card__stock--low]="stockLevel === 'low'"
+            [class.preview-card__stock--ok]="stockLevel === 'available'"
+          >
+            @if (stockLevel === 'out') {
+              <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> Out of stock
+            } @else if (stockLevel === 'low') {
+              <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+              {{ preview().stock ?? 0 }} in stock
+            } @else {
+              <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+              {{ preview().stock ?? 0 }} in stock
+            }
+          </div>
+
+          <p class="preview-card__name">
+            {{ preview().name || 'Product name' }}
+          </p>
+
+          <p class="preview-card__desc">
+            {{ preview().description || 'No description provided.' }}
+          </p>
+
+          <p class="preview-card__price">
+            {{ (preview().price ?? 0) | currency: (preview().currency || 'USD') }}
+          </p>
+        </div>
+      </div>
+
+      <p class="preview-note">
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        This is how the product will appear in the storefront grid.
+      </p>
+    </aside>
+  </div>
+</div>

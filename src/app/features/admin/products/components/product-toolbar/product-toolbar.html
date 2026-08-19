@@ -1,0 +1,50 @@
+<div class="toolbar" role="search" aria-label="Product filters">
+  <!-- Segmented Status Filter -->
+  <div class="toolbar__status-tabs" role="tablist">
+    @for (opt of statusOptions; track opt.value) {
+      <button 
+        type="button"
+        role="tab"
+        class="toolbar__status-tab"
+        [class.toolbar__status-tab--active]="statusFilter() === opt.value"
+        [attr.aria-selected]="statusFilter() === opt.value"
+        (click)="onStatusSelect(opt.value)"
+      >
+        {{ opt.label }}
+      </button>
+    }
+  </div>
+
+  <div class="toolbar__bottom">
+    <!-- Search -->
+    <div class="toolbar__search">
+      <i class="fa-solid fa-magnifying-glass toolbar__search-icon" aria-hidden="true"></i>
+      <input
+        id="product-search"
+        type="search"
+        class="toolbar__search-input"
+        [value]="search()"
+        (input)="onSearchInput($event)"
+        placeholder="Search products..."
+        aria-label="Search products"
+        autocomplete="off"
+      />
+    </div>
+
+    @if (search()) {
+      <button type="button" class="toolbar__reset-btn" (click)="clearSearch()">
+        Reset <span aria-hidden="true">&times;</span>
+      </button>
+    }
+
+    <!-- Page size -->
+    <div class="toolbar__select-wrap">
+      <app-custom-select
+        [options]="pageSizeOptions"
+        [value]="perPage()"
+        label="Items per page"
+        (selectionChange)="onPerPageSelect($event)"
+      />
+    </div>
+  </div>
+</div>

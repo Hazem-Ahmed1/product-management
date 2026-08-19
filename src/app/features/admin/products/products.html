@@ -1,0 +1,51 @@
+<div class="products-page">
+  <!-- Breadcrumb -->
+  <app-breadcrumb [items]="[{ label: 'Products' }]" />
+
+  <!-- Page header -->
+  <div class="products-header">
+    <div>
+      <h1 class="products-header__title">Products</h1>
+      <p class="products-header__subtitle">Browse and manage your product catalog.</p>
+    </div>
+    <a routerLink="/admin/products/create" class="btn-add-product" aria-label="Create new product">
+      <i class="fa-solid fa-plus" aria-hidden="true"></i>
+      Add Product
+    </a>
+  </div>
+
+  <!-- Toolbar: search + status filter + page size -->
+  <app-product-toolbar
+    [search]="search()"
+    [statusFilter]="statusFilter()"
+    [perPage]="perPage()"
+    (searchChange)="onSearchChange($event)"
+    (statusChange)="onStatusChange($event)"
+    (perPageChange)="onPerPageChange($event)"
+  />
+
+
+
+  <!-- Error banner -->
+  @if (loadState() === 'error') {
+    <div class="products-error" role="alert" aria-live="assertive">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      <span>{{ errorMessage() }}</span>
+      <button type="button" class="products-error__retry" (click)="retry()">Try again</button>
+    </div>
+  }
+
+  <!-- Table — signals called directly, no async pipe -->
+  <app-product-table
+    [products]="products()"
+    [loadState]="loadState()"
+    [perPage]="perPage()"
+  />
+
+  <!-- Pagination -->
+  @if (meta(); as meta) {
+    <app-product-pagination [meta]="meta" (pageChange)="onPageChange($event)" />
+  }
+</div>
+
+

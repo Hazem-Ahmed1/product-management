@@ -1,0 +1,12 @@
+<span
+  class="badge"
+  [class.badge--active]="active()"
+  [class.badge--inactive]="!active()"
+  [attr.aria-label]="active() ? 'Active' : 'Inactive'"
+>
+  @if (active()) {
+    <i class="fa-solid fa-circle-check" aria-hidden="true"></i> Active
+  } @else {
+    <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> Inactive
+  }
+</span>

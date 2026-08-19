@@ -1,0 +1,90 @@
+<div class="admin-details">
+  <app-breadcrumb [items]="breadcrumb()" />
+
+  @if (loadState() === 'loading') {
+    <div class="admin-details__loading" role="status">
+      <app-loading-spinner message="Loading product details..." />
+    </div>
+  } @else if (loadState() === 'error') {
+    <div class="admin-details__error" role="alert">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      <p>Failed to load product details. Please try again.</p>
+    </div>
+  } @else if (product(); as p) {
+    <div class="admin-details__header">
+      <div>
+        <h1 class="admin-details__title">{{ p.name }}</h1>
+        <div class="admin-details__status">
+          <span class="badge" [class.badge--active]="p.is_active" [class.badge--inactive]="!p.is_active">
+            {{ p.is_active ? 'Active' : 'Inactive' }}
+          </span>
+          <span class="admin-details__sku">SKU: {{ p.sku }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-details__grid">
+      <!-- Image Section -->
+      <div class="admin-details__card admin-details__card--image">
+        @if (p.thumbnail_url) {
+          <img [src]="p.thumbnail_url" [alt]="p.name" />
+        } @else {
+          <div class="admin-details__no-image">
+            <i class="fa-solid fa-image" aria-hidden="true"></i>
+            <p>No image provided</p>
+          </div>
+        }
+      </div>
+
+      <!-- General Information -->
+      <div class="admin-details__card admin-details__card--info">
+        <h2 class="card-title">Product Information</h2>
+        
+        <dl class="info-list">
+          <div class="info-item">
+            <dt>Price</dt>
+            <dd class="info-price">{{ p.price | currency: (p.currency || 'USD') }}</dd>
+          </div>
+          
+          <div class="info-item">
+            <dt>Stock Level</dt>
+            <dd>
+              <span class="stock-badge" [class.stock-badge--out]="p.stock === 0">
+                {{ p.stock === 0 ? 'Out of Stock' : p.stock + ' in stock' }}
+              </span>
+            </dd>
+          </div>
+
+          <div class="info-item">
+            <dt>Description</dt>
+            <dd class="info-desc">{{ p.description || 'No description provided.' }}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <!-- System Information -->
+      <div class="admin-details__card admin-details__card--system">
+        <h2 class="card-title">System Details</h2>
+        
+        <dl class="info-list">
+          <div class="info-item">
+            <dt>System ID</dt>
+            <dd>#{{ p.id }}</dd>
+          </div>
+          <div class="info-item">
+            <dt>URL Slug</dt>
+            <dd>{{ p.slug || 'N/A' }}</dd>
+          </div>
+          <div class="info-item">
+            <dt>Created At</dt>
+            <dd>{{ p.created_at ? (p.created_at | date:'medium') : 'Unknown' }}</dd>
+          </div>
+          <div class="info-item">
+            <dt>Last Updated</dt>
+            <dd>{{ p.updated_at ? (p.updated_at | date:'medium') : 'Unknown' }}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  }
+</div>

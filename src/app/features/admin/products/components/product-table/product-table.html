@@ -1,0 +1,131 @@
+<div class="table-wrapper" role="region" aria-label="Products table" aria-live="polite">
+  <table class="products-table" aria-label="Products">
+    <thead>
+      <tr>
+        <th scope="col">Product</th>
+        <th scope="col">SKU</th>
+        <th scope="col">Status</th>
+        <th scope="col" class="text-end">Stock</th>
+        <th scope="col" class="text-end">Price</th>
+        <th scope="col">Created</th>
+        <th scope="col" class="text-center">View</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- ── Loading skeleton ─────────────────────────────────── -->
+      @if (loadState() === 'loading') {
+        @for (row of skeletonRows(); track $index) {
+          <tr class="skeleton-row" aria-hidden="true">
+            <td><span class="skeleton skeleton--name"></span></td>
+            <td><span class="skeleton skeleton--sku"></span></td>
+            <td><span class="skeleton skeleton--badge"></span></td>
+            <td><span class="skeleton skeleton--num"></span></td>
+            <td><span class="skeleton skeleton--num"></span></td>
+            <td><span class="skeleton skeleton--date"></span></td>
+            <td><span class="skeleton skeleton--actions"></span></td>
+          </tr>
+        }
+      }
+
+      <!-- ── Empty state ──────────────────────────────────────── -->
+      @else if (loadState() === 'success' && products().length === 0) {
+        <tr>
+          <td colspan="7">
+            <div class="table-empty" role="status">
+              <i class="fa-solid fa-box-open table-empty__icon" aria-hidden="true"></i>
+              <p class="table-empty__title">No products found</p>
+              <p class="table-empty__subtitle">Try adjusting your search or filter.</p>
+            </div>
+          </td>
+        </tr>
+      }
+
+      <!-- ── Error state ──────────────────────────────────────── -->
+      @else if (loadState() === 'error') {
+        <tr>
+          <td colspan="7">
+            <div class="table-empty" role="status">
+              <i class="fa-solid fa-circle-exclamation table-empty__icon" aria-hidden="true" style="color: var(--primary);"></i>
+              <p class="table-empty__title" style="color: var(--primary);">Failed to load products</p>
+              <p class="table-empty__subtitle">An error occurred while fetching the data.</p>
+            </div>
+          </td>
+        </tr>
+      }
+
+      <!-- ── Data rows ────────────────────────────────────────── -->
+      @else if (loadState() === 'success') {
+        @for (product of products(); track product.id) {
+          <tr class="product-row">
+            <!-- Product name + description -->
+            <td class="product-row__name-cell">
+              <div class="product-row__identity">
+                <div class="product-row__image" aria-hidden="true">
+                  @if (hasUsableImage(product)) {
+                    <img
+                      [src]="product.thumbnail_url"
+                      [alt]=""
+                      loading="lazy"
+                      (error)="imageFailed(product.id)"
+                    />
+                  } @else {
+                    <i class="fa-solid fa-box"></i>
+                  }
+                </div>
+                <div class="product-row__details">
+                  <p class="product-row__name">{{ product.name }}</p>
+                  @if (product.description) {
+                    <p class="product-row__desc">{{ product.description }}</p>
+                  }
+                </div>
+              </div>
+            </td>
+
+            <!-- SKU -->
+            <td>
+              <code class="product-row__sku">{{ product.sku }}</code>
+            </td>
+
+            <!-- Status badge -->
+            <td>
+              <app-product-status-badge [active]="product.is_active" />
+            </td>
+
+            <!-- Stock -->
+            <td class="text-end product-row__number">
+              <span
+                class="stock-count"
+                [class.stock-count--out]="product.stock === 0"
+                [class.stock-count--low]="product.stock > 0 && product.stock <= 10"
+                [class.stock-count--ok]="product.stock > 10"
+              >
+                {{ product.stock }}
+              </span>
+            </td>
+
+            <td class="text-end product-row__price">
+              {{ product.price | currency: (product.currency || 'USD') }}
+            </td>
+
+            <!-- Created date -->
+            <td class="product-row__date">
+              {{ product.created_at | date:'MMM d, y' }}
+            </td>
+
+            <!-- View -->
+            <td class="text-center">
+              <a
+                [routerLink]="['/admin/products', product.id]"
+                class="action-btn action-btn--view"
+                [attr.aria-label]="'View ' + product.name"
+                title="View product page"
+              >
+                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+              </a>
+            </td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>

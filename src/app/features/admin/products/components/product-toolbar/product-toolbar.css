@@ -1,0 +1,132 @@
+:host {
+  display: block;
+  margin-bottom: 1.5rem;
+}
+
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Segmented Status Filter (Pill List) ── */
+.toolbar__status-tabs {
+  display: inline-flex;
+  align-items: center;
+  background: var(--gray-bg);
+  padding: 4px;
+  border-radius: 8px;
+  gap: 2px;
+  align-self: flex-start;
+}
+
+.toolbar__status-tab {
+  border: none;
+  background: transparent;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toolbar__status-tab:hover {
+  color: var(--text-main);
+}
+
+.toolbar__status-tab:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.toolbar__status-tab--active {
+  background: var(--white);
+  color: var(--text-main);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* ── Bottom row: Search & Page size ── */
+.toolbar__bottom {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.toolbar__search {
+  position: relative;
+  flex: 1;
+  min-width: 250px;
+}
+
+.toolbar__search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+.toolbar__search-input {
+  width: 100%;
+  border: 1.5px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem 0.5rem 2.2rem;
+  font-size: 0.875rem;
+  font-family: var(--font-main);
+  color: var(--text-main);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.toolbar__search-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(219, 68, 68, 0.12);
+}
+
+.toolbar__select-wrap {
+  position: relative;
+}
+
+.toolbar__reset-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.toolbar__reset-btn span {
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+@media (max-width: 575px) {
+  .toolbar__bottom {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .toolbar__search {
+    min-width: unset;
+  }
+  .toolbar__status-tabs {
+    align-self: stretch;
+    display: flex;
+  }
+  .toolbar__status-tab {
+    flex: 1;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

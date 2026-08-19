@@ -1,0 +1,49 @@
+<nav class="pagination" aria-label="Product list pagination" role="navigation">
+  <p class="pagination__info">
+    Showing {{ meta().from ?? 0 }}–{{ meta().to ?? 0 }} of {{ meta().total }} results
+  </p>
+
+  @if (meta().last_page > 1) {
+    <div class="pagination__controls" role="group" aria-label="Page navigation">
+      <!-- Previous -->
+      <button
+        type="button"
+        class="pagination__btn"
+        [disabled]="meta().current_page === 1"
+        (click)="goTo(meta().current_page - 1)"
+        aria-label="Previous page"
+      >
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+      </button>
+
+      <!-- Page numbers -->
+      @for (page of pages(); track $index) {
+        @if (page === '...') {
+          <span class="pagination__ellipsis" aria-hidden="true">…</span>
+        } @else {
+          <button
+            type="button"
+            class="pagination__btn"
+            [class.pagination__btn--active]="page === meta().current_page"
+            (click)="goTo(page)"
+            [attr.aria-label]="'Page ' + page"
+            [attr.aria-current]="page === meta().current_page ? 'page' : null"
+          >
+            {{ page }}
+          </button>
+        }
+      }
+
+      <!-- Next -->
+      <button
+        type="button"
+        class="pagination__btn"
+        [disabled]="meta().current_page === meta().last_page"
+        (click)="goTo(meta().current_page + 1)"
+        aria-label="Next page"
+      >
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      </button>
+    </div>
+  }
+</nav>
