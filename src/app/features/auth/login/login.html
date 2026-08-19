@@ -1,0 +1,135 @@
+<section class="login-page" aria-label="Login page">
+  <div class="login-card">
+    <!-- ══ LEFT: Form Panel ══════════════════════════════════ -->
+    <div class="login-form-panel">
+      <!-- Brand -->
+      <div class="login-brand" aria-label="ShopAdmin brand">
+        <i class="fa-solid fa-bag-shopping login-brand__icon" aria-hidden="true"></i>
+        <span class="login-brand__name">ShopAdmin</span>
+      </div>
+
+      <p class="login-welcome">Welcome back !!!</p>
+      <h1 class="login-title">Sign in</h1>
+
+      <!-- API Error Alert -->
+      @if (errorMessage()) {
+        <div class="login-alert" role="alert" aria-live="assertive" aria-atomic="true">
+          <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <!-- Session expired notice (shown after page refresh) -->
+      @if (sessionExpired()) {
+        <div class="login-alert login-alert--info" role="status" aria-live="polite">
+          <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+          <span>Your session expired. Please sign in again.</span>
+        </div>
+      }
+
+      <!-- Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate aria-label="Sign in form">
+        <!-- Email -->
+        <div class="login-field">
+          <label class="login-field__label" for="login-email">Email</label>
+          <input
+            id="login-email"
+            type="email"
+            class="login-field__input"
+            [class.login-field__input--error]="emailControl.invalid && emailControl.touched"
+            formControlName="email"
+            placeholder="test@gmail.com"
+            autocomplete="email"
+            aria-required="true"
+            [attr.aria-describedby]="
+              emailControl.invalid && emailControl.touched ? 'email-error' : null
+            "
+          />
+          @if (emailControl.invalid && emailControl.touched) {
+            <p id="email-error" class="login-field__error" role="alert">
+              @if (emailControl.errors?.['required']) {
+                Email is required.
+              } @else if (emailControl.errors?.['email']) {
+                Please enter a valid email address.
+              }
+            </p>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="login-field">
+          <div class="login-field__row">
+            <label class="login-field__label" for="login-password">Password</label>
+          </div>
+          <div class="login-field__password-wrap">
+            <input
+              id="login-password"
+              [type]="showPassword() ? 'text' : 'password'"
+              class="login-field__input login-field__input--pw"
+              [class.login-field__input--error]="passwordControl.invalid && passwordControl.touched"
+              formControlName="password"
+              placeholder="••••••••••••"
+              autocomplete="current-password"
+              aria-required="true"
+              [attr.aria-describedby]="
+                passwordControl.invalid && passwordControl.touched ? 'pw-error' : null
+              "
+            />
+            <button
+              type="button"
+              class="login-field__eye"
+              (click)="togglePassword()"
+              [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+              [attr.aria-pressed]="showPassword()"
+            >
+              <i
+                class="fa-solid"
+                [class.fa-eye]="!showPassword()"
+                [class.fa-eye-slash]="showPassword()"
+                aria-hidden="true"
+              ></i>
+            </button>
+          </div>
+          @if (passwordControl.invalid && passwordControl.touched) {
+            <p id="pw-error" class="login-field__error" role="alert">
+              @if (passwordControl.errors?.['required']) {
+                Password is required.
+              } @else if (passwordControl.errors?.['minlength']) {
+                Must be at least 6 characters.
+              }
+            </p>
+          }
+        </div>
+
+        <!-- Submit -->
+        <button
+          id="login-submit-btn"
+          type="submit"
+          class="btn-primary-custom login-submit"
+          [disabled]="isLoading()"
+          aria-label="Sign in to your account"
+        >
+          @if (isLoading()) {
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span>Signing in...</span>
+          } @else {
+            <span>SIGN IN</span>
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          }
+        </button>
+      </form>
+    </div>
+
+    <!-- ══ RIGHT: Illustration Panel ════════════════════════ -->
+    <div class="login-illustration" aria-hidden="true">
+      <img
+        ngSrc="assets/images/Login Image.png"
+        alt=""
+        width="390"
+        height="580"
+        class="login-illustration__img"
+        priority
+      />
+    </div>
+  </div>
+</section>
