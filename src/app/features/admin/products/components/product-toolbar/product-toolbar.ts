@@ -21,7 +21,7 @@ export class ProductToolbar {
 
   readonly pageSizeOptions = PAGE_SIZE_OPTIONS.map((size) => ({
     value: size,
-    label: `${size} / page`,
+    label: `${size} Rows`,
   }));
   readonly statusOptions: { value: StatusFilter; label: string }[] = [
     { value: 'all', label: 'All' },
