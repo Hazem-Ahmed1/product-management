@@ -1,0 +1,28 @@
+<div class="admin-shell" [class.admin-shell--collapsed]="sidebarCollapsed()">
+  <app-admin-sidebar
+    [collapsed]="isMobile() ? false : sidebarCollapsed()"
+    [open]="sidebarOpen()"
+    (navigationSelected)="closeMobileSidebar()"
+    aria-label="Admin navigation"
+  />
+
+  @if (isMobile() && sidebarOpen()) {
+    <button
+      type="button"
+      class="admin-sidebar-backdrop"
+      aria-label="Close navigation menu"
+      (click)="closeMobileSidebar()"
+    ></button>
+  }
+
+  <div class="admin-main">
+    <app-admin-topbar
+      [sidebarExpanded]="isMobile() ? sidebarOpen() : !sidebarCollapsed()"
+      (menuToggle)="toggleSidebar()"
+    />
+
+    <main class="admin-content" id="main-content" tabindex="-1">
+      <router-outlet />
+    </main>
+  </div>
+</div>

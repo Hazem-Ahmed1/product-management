@@ -1,0 +1,43 @@
+<aside
+  class="sidebar"
+  id="admin-sidebar"
+  [class.sidebar--collapsed]="collapsed()"
+  [class.sidebar--open]="open()"
+  aria-label="Admin navigation"
+>
+  <!-- Brand -->
+  <div class="sidebar__brand" aria-label="ShopAdmin brand">
+    <i class="fa-solid fa-bag-shopping sidebar__brand-icon" aria-hidden="true"></i>
+    @if (!collapsed()) {
+      <span class="sidebar__brand-name">ShopAdmin</span>
+    }
+  </div>
+
+  <!-- Navigation -->
+  <nav aria-label="Main navigation">
+    <p class="sidebar__section-label" [class.sidebar__section-label--hidden]="collapsed()">
+      COMMERCE
+    </p>
+
+    <ul class="sidebar__nav" role="list">
+      @for (item of navItems; track item.route) {
+        <li>
+          <a
+            [routerLink]="item.route"
+            (click)="navigationSelected.emit()"
+            routerLinkActive="sidebar__nav-item--active"
+            [routerLinkActiveOptions]="{ exact: !!item.exact }"
+            class="sidebar__nav-item"
+            [attr.aria-label]="item.label"
+            [attr.title]="collapsed() ? item.label : null"
+          >
+            <i class="fa-solid {{ item.icon }} sidebar__nav-icon" aria-hidden="true"></i>
+            @if (!collapsed()) {
+              <span class="sidebar__nav-label">{{ item.label }}</span>
+            }
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+</aside>
