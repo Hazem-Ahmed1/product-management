@@ -213,7 +213,7 @@ The Create Product form is built with **Angular Reactive Forms**:
 - **Client-side validation** with clear, inline error messages (required fields, min price, integer-only stock, max length).
 - **Live preview card** that updates on every keystroke via `toSignal(form.valueChanges)`.
 - **Backend validation mapping** — 422 errors from the API are automatically mapped back to the corresponding form control using `setErrors({ serverError })`.
-- **Duplicate submission prevention** — uses `exhaustMap` + a disabled submit button while the request is in flight (see [Why `exhaustMap`](#why-exhaustmap) below).
+- **Duplicate submission prevention** — uses `exhaustMap` + a disabled submit button while the request is in flight.
 
 ### 7. Edit Product
 
