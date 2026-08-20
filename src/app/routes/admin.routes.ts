@@ -2,11 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from '../core/guards/auth.guard';
 import { unsavedChangesGuard } from '../core/guards/unsaved-changes.guard';
 
-/**
- * Admin routes — all protected by authGuard.
- * Loaded inside the AdminLayout shell (router-outlet).
- * All views here are admin-only (not for regular users).
- */
+
 export const adminRoutes: Routes = [
   {
     path: 'admin',
@@ -32,7 +28,6 @@ export const adminRoutes: Routes = [
             (m) => m.ProductCreate,
           ),
         title: 'Create Product — ShopAdmin',
-        canDeactivate: [unsavedChangesGuard],
       },
       {
         path: 'products/:id/edit',
