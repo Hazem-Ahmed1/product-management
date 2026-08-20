@@ -428,7 +428,7 @@ The result is a simple and predictable search implementation that combines **RxJ
 
 ## 🎨 UX Enhancements
 
-### Loading Skeleton Rows (Admin Table)
+### Loading Skeleton Rows (Admin Products Table)
 
 Instead of showing a generic spinner over the admin table, the loading state renders **skeleton rows** that mimic the shape of real data:
 
