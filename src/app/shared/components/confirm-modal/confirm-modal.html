@@ -1,0 +1,32 @@
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true" #modalElement>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmModalLabel">{{ title() }}</h5>
+        <button type="button" class="btn-close" (click)="onCancel()" aria-label="Close" [disabled]="isProcessing()"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-0">{{ message() }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="isProcessing()">
+          {{ cancelText() }}
+        </button>
+        <button 
+          type="button" 
+          class="btn" 
+          [class.btn-danger]="isDestructive()"
+          [class.btn-primary]="!isDestructive()"
+          (click)="onConfirm()" 
+          [disabled]="isProcessing()"
+        >
+          @if (isProcessing()) {
+            <i class="fa-solid fa-spinner fa-spin me-1"></i> Processing...
+          } @else {
+            {{ confirmText() }}
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -21,6 +21,10 @@
           <span class="admin-details__sku">SKU: {{ p.sku }}</span>
         </div>
       </div>
+      <a [routerLink]="['/admin/products', p.id, 'edit']" class="btn-edit" aria-label="Edit product">
+        <i class="fa-solid fa-pen" aria-hidden="true"></i>
+        Edit Product
+      </a>
     </div>
 
     <div class="admin-details__grid">

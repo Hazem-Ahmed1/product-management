@@ -57,7 +57,7 @@ describe('AuthService', () => {
     expect(service.token()).toBe('test-token-123');
   });
 
-  it('should NOT write token to localStorage after login', () => {
+  it('should write token to sessionStorage after login', () => {
     const mockRes = {
       message: 'ok',
       token: 'secret-token',
@@ -67,8 +67,8 @@ describe('AuthService', () => {
     service.login({ email: 'jane@example.com', password: 'pass' }).subscribe();
     httpMock.expectOne(`${environment.apiBaseUrl}/auth/login`).flush(mockRes);
 
-    expect(localStorage.getItem('shop_admin_token')).toBeNull();
-    expect(localStorage.getItem('shop_admin_user')).toBeNull();
+    expect(sessionStorage.getItem('shop_admin_token')).toBe('secret-token');
+    expect(sessionStorage.getItem('shop_admin_user')).toBeTruthy();
   });
 
   it('should clear token and user on logout', () => {
@@ -80,6 +80,7 @@ describe('AuthService', () => {
 
     expect(service.isAuthenticated()).toBe(false);
     expect(service.token()).toBeNull();
+    expect(sessionStorage.getItem('shop_admin_token')).toBeNull();
   });
 
   it('should return error observable on 404', () => {

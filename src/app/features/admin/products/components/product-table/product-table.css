@@ -185,7 +185,6 @@ td.product-row__date {
 }
 
 .action-btn--view {
-  background: #eff6ff;
   color: #2563eb;
 }
 
@@ -285,4 +284,25 @@ td.product-row__date {
 }
 .text-center {
   text-align: center;
+}
+
+.action-btn--edit {
+  color: #f5a819;
+}
+
+.action-btn--edit:hover {
+  background: rgb(250, 238, 176);
+  color: #cf8a09;
+}
+
+
+.action-btn--delete{
+  color: var(--primary);
+   background: transparent;
+    border: none;
+    cursor: pointer;
+}
+.action-btn--delete:hover {
+  background: rgb(247, 201, 201);
+  color: red;
 }

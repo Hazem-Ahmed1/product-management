@@ -66,6 +66,37 @@ export class ProductService {
       );
   }
 
+  /** PUT /api/products/:id — throws ProductValidationError on 422 */
+  update(id: number, payload: CreateProductRequest): Observable<{ data: Product }> {
+    return this.http
+      .put<{ data: Product }>(`${this.base}/${id}`, payload)
+      .pipe(
+        catchError((err: HttpErrorResponse) => {
+          if (err.status === 422) {
+            const body = err.error as {
+              message?: string;
+              errors?: Record<string, string[]>;
+            };
+            return throwError(
+              () =>
+                new ProductValidationError(
+                  body?.message ?? 'Validation error.',
+                  body?.errors ?? {},
+                ),
+            );
+          }
+          return this.handleError(err);
+        }),
+      );
+  }
+
+  /** DELETE /api/products/:id — deletes a product */
+  delete(id: number): Observable<void> {
+    return this.http
+      .delete<void>(`${this.base}/${id}`)
+      .pipe(catchError((err: HttpErrorResponse | Error) => this.handleError(err)));
+  }
+
 
   private handleError(err: HttpErrorResponse | Error): Observable<never> {
     if (err instanceof Error) {

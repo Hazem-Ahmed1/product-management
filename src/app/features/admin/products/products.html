@@ -40,12 +40,24 @@
     [products]="products()"
     [loadState]="loadState()"
     [perPage]="perPage()"
+    (deleteProduct)="requestDelete($event)"
   />
 
   <!-- Pagination -->
   @if (meta(); as meta) {
     <app-product-pagination [meta]="meta" (pageChange)="onPageChange($event)" />
   }
+
+  <app-confirm-modal
+    [isOpen]="productToDelete() !== null"
+    title="Delete Product"
+    [message]="'Are you sure you want to delete \'' + (productToDelete()?.name || '') + '\'? This action cannot be undone.'"
+    confirmText="Delete"
+    [isDestructive]="true"
+    [isProcessing]="isDeleting()"
+    (confirm)="confirmDelete()"
+    (cancel)="cancelDelete()"
+  />
 </div>
 
 

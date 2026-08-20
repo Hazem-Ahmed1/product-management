@@ -1,0 +1,127 @@
+<div class="create-page">
+  <app-breadcrumb [items]="breadcrumb()" />
+
+  <header class="create-page__header">
+    <div class="create-page__mode-badge">
+      <i class="fa-solid fa-shield-halved" aria-hidden="true"></i> ADMIN MODE
+    </div>
+    <h1 class="create-page__title">Edit product</h1>
+    <p class="create-page__subtitle">
+      Make changes to your product configuration.
+    </p>
+  </header>
+
+  @if (isFetching()) {
+    <div class="loading-state">
+      <i class="fa-solid fa-spinner fa-spin"></i> Loading product...
+    </div>
+  } @else {
+    <div class="create-layout">
+      <!-- ── Form column ──────────────────────────────────────────── -->
+      <section class="create-form-panel" aria-label="Product form">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+  
+          @if (serverError()) {
+            <div class="form-server-error" role="alert" aria-live="assertive">
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+              {{ serverError() }}
+            </div>
+          }
+  
+          <div class="form-field" [class.form-field--error]="isInvalid('name')">
+            <label class="form-label" for="f-name">
+              Product name <span class="form-required" aria-hidden="true">*</span>
+            </label>
+            <input id="f-name" type="text" class="form-input" formControlName="name" placeholder="e.g. Wireless Keyboard" autocomplete="off" />
+            @if (isInvalid('name')) {
+              <p class="form-error-msg" role="alert">{{ errorFor('name') }}</p>
+            }
+          </div>
+  
+          <div class="form-field" [class.form-field--error]="isInvalid('description')">
+            <label class="form-label" for="f-desc">Description</label>
+            <textarea id="f-desc" class="form-input form-textarea" formControlName="description" placeholder="Short, customer-facing description…" rows="4"></textarea>
+            @if (isInvalid('description')) {
+              <p class="form-error-msg" role="alert">{{ errorFor('description') }}</p>
+            }
+          </div>
+  
+          <div class="form-row">
+            <div class="form-field" [class.form-field--error]="isInvalid('price')">
+              <label class="form-label" for="f-price">
+                Price <span class="form-required" aria-hidden="true">*</span>
+              </label>
+              <div class="form-input-prefix">
+                <span class="form-prefix-icon" aria-hidden="true">
+                  <i class="fa-solid fa-dollar-sign"></i>
+                </span>
+                <input id="f-price" type="number" class="form-input form-input--prefixed" formControlName="price" min="0" step="0.01" />
+              </div>
+              @if (isInvalid('price')) {
+                <p class="form-error-msg" role="alert">{{ errorFor('price') }}</p>
+              }
+            </div>
+  
+            <div class="form-field" [class.form-field--error]="isInvalid('currency')">
+              <label class="form-label">Currency</label>
+              <app-custom-select [options]="currencyOptions" [value]="form.controls.currency.value" label="Select currency" (selectionChange)="setCurrency($event)" />
+            </div>
+  
+            <div class="form-field" [class.form-field--error]="isInvalid('stock')">
+              <label class="form-label" for="f-stock">
+                Stock quantity <span class="form-required" aria-hidden="true">*</span>
+              </label>
+              <input id="f-stock" type="number" class="form-input" formControlName="stock" min="0" step="1" />
+              @if (isInvalid('stock')) {
+                <p class="form-error-msg" role="alert">{{ errorFor('stock') }}</p>
+              }
+            </div>
+          </div>
+  
+          <div class="form-field form-field--toggle">
+            <label class="form-toggle" for="f-active">
+              <input id="f-active" type="checkbox" class="form-toggle__input" formControlName="is_active" />
+              <span class="form-toggle__track" aria-hidden="true"></span>
+              <span class="form-toggle__label">
+                {{ form.get('is_active')?.value ? 'Active — visible in the storefront' : 'Inactive — hidden from storefront' }}
+              </span>
+            </label>
+          </div>
+  
+          <div class="form-actions">
+            <button type="submit" class="btn-submit" [disabled]="!form.dirty">
+              <i class="fa-solid fa-save" aria-hidden="true"></i> Save changes
+            </button>
+            <a routerLink="/admin/products" class="btn-cancel">Cancel</a>
+          </div>
+  
+        </form>
+      </section>
+  
+      <!-- ── Live Preview column ──────────────────────────────────── -->
+      <app-product-live-preview [product]="preview() || {}" />
+    </div>
+  }
+
+  <!-- Save Confirmation Modal -->
+  <app-confirm-modal
+    [isOpen]="isConfirmModalOpen()"
+    title="Update Product"
+    message="Are you sure you want to save these changes to the product?"
+    confirmText="Save changes"
+    [isProcessing]="isLoading()"
+    (confirm)="confirmSave()"
+    (cancel)="cancelSave()"
+  />
+
+  <!-- Leave Confirmation Modal -->
+  <app-confirm-modal
+    [isOpen]="isLeaveModalOpen()"
+    title="Unsaved Changes"
+    message="You have unsaved changes. Are you sure you want to leave this page? Your changes will be lost."
+    confirmText="Leave page"
+    [isDestructive]="true"
+    (confirm)="confirmLeave()"
+    (cancel)="cancelLeave()"
+  />
+</div>

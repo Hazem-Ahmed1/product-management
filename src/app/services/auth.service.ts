@@ -7,9 +7,9 @@ import { environment } from '../environments/environment';
 import type { LoginRequest, LoginResponse, User } from '../models/auth.model';
 
 /**
- * Security strategy: IN-MEMORY
+ * Security strategy: SESSION STORAGE
  * ─────────────────────────────────
- * The token is stored only in memory for maximum security.
+ * The token is stored in sessionStorage to persist across reloads but clear when the tab closes.
  */
 
 @Injectable({ providedIn: 'root' })
@@ -18,8 +18,8 @@ export class AuthService {
   private router = inject(Router);
 
   // ── State ────────────────────────────────────────────────────────
-  private readonly _token = signal<string | null>(null);
-  private readonly _user = signal<User | null>(null);
+  private readonly _token = signal<string | null>(this.getInitialToken());
+  private readonly _user = signal<User | null>(this.getInitialUser());
 
   /** Read-only signal consumed by the HTTP interceptor. */
   readonly token = this._token.asReadonly();
@@ -52,10 +52,7 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
-  /**
-   * Called by the HTTP interceptor when a 401 is received from the API.
-   * Clears the in-memory token and redirects without touching any storage.
-   */
+
   handleUnauthorized(): void {
     this.clearSession();
     this.router.navigate(['/login']);
@@ -66,11 +63,34 @@ export class AuthService {
   private startSession(res: LoginResponse): void {
     this._token.set(res.token);
     this._user.set(res.user);
+    sessionStorage.setItem('shop_admin_token', res.token);
+    if (res.user) {
+      sessionStorage.setItem('shop_admin_user', JSON.stringify(res.user));
+    }
   }
 
   private clearSession(): void {
     this._token.set(null);
     this._user.set(null);
+    sessionStorage.removeItem('shop_admin_token');
+    sessionStorage.removeItem('shop_admin_user');
+  }
+
+  private getInitialToken(): string | null {
+    try {
+      return sessionStorage.getItem('shop_admin_token');
+    } catch {
+      return null;
+    }
+  }
+
+  private getInitialUser(): User | null {
+    try {
+      const userStr = sessionStorage.getItem('shop_admin_user');
+      return userStr ? JSON.parse(userStr) : null;
+    } catch {
+      return null;
+    }
   }
 
   private handleError(err: HttpErrorResponse): Observable<never> {

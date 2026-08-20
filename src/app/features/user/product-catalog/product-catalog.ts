@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, computed, signal } from '@angular/core';
 import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
@@ -39,13 +38,15 @@ export class ProductCatalog {
     stream: ({ params }) => this.products.getAll(params),
   });
 
-  readonly productsList = computed(() => this.productsResource.value()?.data ?? []);
-  readonly meta = computed(() => this.productsResource.value()?.meta ?? null);
+  readonly productsList = computed(() => this.productsResource.hasValue() ? this.productsResource.value()?.data ?? [] : []);
+  readonly meta = computed(() => this.productsResource.hasValue() ? this.productsResource.value()?.meta ?? null : null);
 
-  readonly loadState = computed<LoadState>(() =>
-    this.productsResource.isLoading() ? 'loading' :
-    this.productsResource.error() ? 'error' : 'success'
-  );
+  readonly loadState = computed<LoadState>(() => {
+    const status = this.productsResource.status();
+    if (status === 'error') return 'error';
+    if (status === 'loading' || status === 'reloading') return 'loading';
+    return 'success';
+  });
 
   readonly errorMessage = computed(() => {
     const err = this.productsResource.error();

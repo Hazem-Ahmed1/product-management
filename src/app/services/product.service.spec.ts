@@ -125,4 +125,34 @@ describe('ProductService', () => {
       req.flush({ data: mockProduct });
     });
   });
+
+  describe('update()', () => {
+    it('should PUT to update a product', () => {
+      const updatePayload = {
+        name: 'Updated Name',
+        price: 89.99,
+        stock: 50,
+        currency: 'USD',
+        is_active: true
+      };
+      service.update(1, updatePayload).subscribe((res) => {
+        expect(res.data.name).toBe('Updated Name');
+      });
+
+      const req = httpMock.expectOne(`${environment.apiBaseUrl}/products/1`);
+      expect(req.request.method).toBe('PUT');
+      expect(req.request.body).toEqual(updatePayload);
+      req.flush({ data: { ...mockProduct, ...updatePayload } });
+    });
+  });
+
+  describe('delete()', () => {
+    it('should DELETE a product by id', () => {
+      service.delete(1).subscribe();
+
+      const req = httpMock.expectOne(`${environment.apiBaseUrl}/products/1`);
+      expect(req.request.method).toBe('DELETE');
+      req.flush(null);
+    });
+  });
 });

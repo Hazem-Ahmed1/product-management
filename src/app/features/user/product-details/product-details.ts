@@ -1,10 +1,10 @@
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, computed, effect } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { ProductService } from '../../../services/product.service';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-product-details',
@@ -44,12 +44,13 @@ export class ProductDetails {
   }
 
   readonly loadState = computed<'loading' | 'error' | 'success'>(() => {
-    if (this.productResource.isLoading()) return 'loading';
-    if (this.productResource.error()) return 'error';
+    const status = this.productResource.status();
+    if (status === 'error') return 'error';
+    if (status === 'loading' || status === 'reloading') return 'loading';
     return 'success';
   });
 
-  readonly product = computed(() => this.productResource.value());
+  readonly product = computed(() => this.productResource.hasValue() ? this.productResource.value() : undefined);
   
   readonly errorMessage = computed(() => {
     const err = this.productResource.error();

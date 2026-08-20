@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, switchMap, of } from 'rxjs';
 import { ProductService } from '../../../services/product.service';
@@ -9,7 +9,7 @@ import { LoadingSpinner } from '../../../shared/components/loading-spinner/loadi
 
 @Component({
   selector: 'app-admin-product-details',
-  imports: [CurrencyPipe, DatePipe, Breadcrumb, LoadingSpinner],
+  imports: [CurrencyPipe, DatePipe, Breadcrumb, LoadingSpinner, RouterLink],
   templateUrl: './admin-product-details.html',
   styleUrl: './admin-product-details.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

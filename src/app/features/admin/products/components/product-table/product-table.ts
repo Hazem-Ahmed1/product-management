@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, computed, signal, output } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import type { Product } from '../../../../../models/product.model';
@@ -17,6 +17,8 @@ export class ProductTable {
   readonly loadState = input.required<LoadState>();
   readonly perPage = input(15);
 
+  readonly deleteProduct = output<Product>();
+
   private readonly failedImageIds = signal<ReadonlySet<number>>(new Set());
 
   /** Array of skeleton row indices for the loading state */
@@ -28,5 +30,9 @@ export class ProductTable {
 
   hasUsableImage(product: Product): boolean {
     return !!product.thumbnail_url && !this.failedImageIds().has(product.id);
+  }
+
+  onDelete(product: Product): void {
+    this.deleteProduct.emit(product);
   }
 }

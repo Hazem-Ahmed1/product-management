@@ -19,18 +19,23 @@ import { ProductToolbar } from './components/product-toolbar/product-toolbar';
 import { ProductTable } from './components/product-table/product-table';
 import { ProductPagination } from './components/product-pagination/product-pagination';
 import { Breadcrumb } from '../../../shared/components/breadcrumb/breadcrumb';
+import { ConfirmModal } from '../../../shared/components/confirm-modal/confirm-modal';
+import { ToastService } from '../../../shared/components/toast/toast.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subject, switchMap, catchError, EMPTY, finalize } from 'rxjs';
 
 export type LoadState = 'loading' | 'success' | 'error';
 
 @Component({
   selector: 'app-products',
-  imports: [RouterLink, ProductToolbar, ProductTable, ProductPagination, Breadcrumb],
+  imports: [RouterLink, ProductToolbar, ProductTable, ProductPagination, Breadcrumb, ConfirmModal],
   templateUrl: './products.html',
   styleUrl: './products.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Products {
   private readonly productService = inject(ProductService);
+  private readonly toast = inject(ToastService);
 
   readonly page         = signal(1);
   readonly perPage      = signal<PageSize>(15);
@@ -60,14 +65,15 @@ export class Products {
     stream:  ({ params }) => this.productService.getAll(params),
   });
 
-  readonly products  = computed(() => this.productsResource.value()?.data  ?? []);
-  readonly meta      = computed(() => this.productsResource.value()?.meta  ?? null);
+  readonly products  = computed(() => this.productsResource.hasValue() ? this.productsResource.value()?.data  ?? [] : []);
+  readonly meta      = computed(() => this.productsResource.hasValue() ? this.productsResource.value()?.meta  ?? null : null);
 
-  readonly loadState = computed<LoadState>(() =>
-    this.productsResource.isLoading() ? 'loading' :
-    this.productsResource.error()     ? 'error'   :
-    'success',
-  );
+  readonly loadState = computed<LoadState>(() => {
+    const status = this.productsResource.status();
+    if (status === 'error') return 'error';
+    if (status === 'loading' || status === 'reloading') return 'loading';
+    return 'success';
+  });
 
   readonly errorMessage = computed(() => {
     const err = this.productsResource.error();
@@ -101,5 +107,47 @@ export class Products {
 
   retry(): void {
     this.productsResource.reload();
+  }
+
+  // ── Delete functionality ──────────────────────────────────────────
+  readonly productToDelete = signal<Product | null>(null);
+  readonly isDeleting = signal(false);
+  private readonly delete$ = new Subject<number>();
+
+  constructor() {
+    this.delete$.pipe(
+      switchMap((id) => {
+        this.isDeleting.set(true);
+        return this.productService.delete(id).pipe(
+          catchError((err) => {
+            this.toast.error(err.message || 'Failed to delete product.');
+            return EMPTY;
+          }),
+          finalize(() => {
+            this.isDeleting.set(false);
+            this.productToDelete.set(null);
+          })
+        );
+      }),
+      takeUntilDestroyed()
+    ).subscribe(() => {
+      this.toast.success('Product deleted successfully.');
+      this.productsResource.reload();
+    });
+  }
+
+  requestDelete(product: Product): void {
+    this.productToDelete.set(product);
+  }
+
+  cancelDelete(): void {
+    this.productToDelete.set(null);
+  }
+
+  confirmDelete(): void {
+    const product = this.productToDelete();
+    if (product) {
+      this.delete$.next(product.id);
+    }
   }
 }

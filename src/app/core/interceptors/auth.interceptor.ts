@@ -15,12 +15,10 @@ export const authInterceptor: HttpInterceptorFn = (
   const authService = inject(AuthService);
   const token = authService.token();
 
-  // Attach Bearer token if one is held in memory
   const authReq = token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
 
   return next(authReq).pipe(
     catchError((err: unknown) => {
-      // If the API returns 401, the token is invalid/expired — force logout
       if (err instanceof HttpErrorResponse && err.status === 401) {
         authService.handleUnauthorized();
       }

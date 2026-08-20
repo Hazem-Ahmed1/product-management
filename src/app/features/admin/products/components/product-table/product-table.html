@@ -8,7 +8,7 @@
         <th scope="col" class="text-end">Stock</th>
         <th scope="col" class="text-end">Price</th>
         <th scope="col">Created</th>
-        <th scope="col" class="text-center">View</th>
+        <th scope="col" class="text-center">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -112,16 +112,35 @@
               {{ product.created_at | date:'MMM d, y' }}
             </td>
 
-            <!-- View -->
+            <!-- Actions -->
             <td class="text-center">
-              <a
-                [routerLink]="['/admin/products', product.id]"
-                class="action-btn action-btn--view"
-                [attr.aria-label]="'View ' + product.name"
-                title="View product page"
-              >
-                <i class="fa-solid fa-eye" aria-hidden="true"></i>
-              </a>
+              <div class="table-actions" style="display: flex; gap: 0.5rem; justify-content: center;">
+                <a
+                  [routerLink]="['/admin/products', product.id]"
+                  class="action-btn action-btn--view"
+                  [attr.aria-label]="'View ' + product.name"
+                  title="View product"
+                >
+                  <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                </a>
+                <a
+                  [routerLink]="['/admin/products', product.id, 'edit']"
+                  class="action-btn action-btn--edit"
+                  [attr.aria-label]="'Edit ' + product.name"
+                  title="Edit product"
+                >
+                  <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                </a>
+                <button
+                  type="button"
+                  class="action-btn action-btn--delete"
+                  [attr.aria-label]="'Delete ' + product.name"
+                  title="Delete product"
+                  (click)="onDelete(product)"
+                >
+                  <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                </button>
+              </div>
             </td>
           </tr>
         }
