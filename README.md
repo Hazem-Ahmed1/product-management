@@ -213,7 +213,7 @@ The Create Product form is built with **Angular Reactive Forms**:
 - **Client-side validation** with clear, inline error messages (required fields, min price, integer-only stock, max length).
 - **Live preview card** that updates on every keystroke via `toSignal(form.valueChanges)`.
 - **Backend validation mapping** — 422 errors from the API are automatically mapped back to the corresponding form control using `setErrors({ serverError })`.
-- **Duplicate submission prevention** — uses `exhaustMap` + a disabled submit button while the request is in flight (see [Why `exhaustMap`](#-why-exhaustmap) below).
+- **Duplicate submission prevention** — uses `exhaustMap` + a disabled submit button while the request is in flight (see [Why `exhaustMap`](#why-exhaustmap) below).
 
 ### 7. Edit Product
 
@@ -341,6 +341,88 @@ The create/edit forms follow a consistent pattern:
 5. **`catchError`** — if 422, maps field errors to `setErrors()`; otherwise shows a server error banner.
 6. **`finalize`** — always clears the loading state, even on error.
 7. **`takeUntilDestroyed()`** — automatically unsubscribes when the component is destroyed.
+
+### Why Debounced Search with Signals + `rxResource`?
+
+The product search uses a combination of **Angular Signals**, **RxJS**, and **`rxResource`** to provide responsive server-side searching without making an API request for every keystroke.
+
+**Flow:**
+
+```text
+User types
+    ↓
+search signal
+    ↓
+toObservable()
+    ↓
+debounceTime(350ms)
+    ↓
+distinctUntilChanged()
+    ↓
+toSignal()
+    ↓
+computed params
+    ↓
+rxResource
+    ↓
+Product API
+```
+
+**Implementation:**
+
+```typescript
+private readonly debouncedSearch = toSignal(
+  toObservable(this.search).pipe(
+    debounceTime(350),
+    distinctUntilChanged(),
+  ),
+  { initialValue: '' },
+);
+
+private readonly params = computed(() => ({
+  page: this.page(),
+  per_page: this.perPage(),
+  search: this.debouncedSearch() || undefined,
+  is_active:
+    this.statusFilter() === 'active' ? true :
+    this.statusFilter() === 'inactive' ? false :
+    undefined,
+}));
+
+private readonly productsResource = rxResource({
+  params: () => this.params(),
+  stream: ({ params }) => this.productService.getAll(params),
+});
+```
+
+**Why this approach?**
+
+* **`debounceTime(350)`** prevents an API request from being sent for every keystroke. The request is made only after the user stops typing for 350ms.
+* **`distinctUntilChanged()`** prevents unnecessary requests when the search value has not actually changed.
+* **Signals** keep the search state reactive and integrate naturally with Angular's modern change-detection model.
+* **`computed()`** combines the search term with pagination and status-filter state into a single reactive set of API parameters.
+* **`rxResource`** automatically re-fetches the products whenever those parameters change and provides built-in loading, error, and resolved states.
+* **Server-side search** keeps filtering responsibility on the API rather than loading the entire product collection into the browser.
+
+### Why not manually use `switchMap`?
+
+A manual `switchMap` search pipeline is a common RxJS approach because it allows a newer search request to supersede an older one. However, this implementation uses **`rxResource`** as the reactive data-fetching abstraction.
+
+Instead of manually managing:
+
+```text
+search → switchMap → HTTP request → subscription → loading/error state
+```
+
+the application separates the concerns:
+
+```text
+search → debounce → reactive params → rxResource → HTTP request
+```
+
+This keeps the component declarative while allowing `rxResource` to manage the lifecycle of the resource and its associated HTTP observable.
+
+The result is a simple and predictable search implementation that combines **RxJS where it is useful for input timing** with **Angular Signals and `rxResource` for reactive data fetching**.
 
 ---
 

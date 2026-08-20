@@ -21,8 +21,6 @@ import { ProductPagination } from './components/product-pagination/product-pagin
 import { Breadcrumb } from '../../../shared/components/breadcrumb/breadcrumb';
 import { ConfirmModal } from '../../../shared/components/confirm-modal/confirm-modal';
 import { ToastService } from '../../../shared/components/toast/toast.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Subject, switchMap, catchError, EMPTY, finalize } from 'rxjs';
 
 export type LoadState = 'loading' | 'success' | 'error';
 
@@ -80,8 +78,8 @@ export class Products {
     if (!err) return '';
     if (err instanceof Error) return err.message;
     if (typeof err === 'string') return err;
-    if (typeof err === 'object' && 'message' in err) {
-      return String((err as any).message) || 'An unexpected error occurred.';
+    if (typeof err === 'object' && err !== null && 'message' in err) {
+      return String((err as Record<string, unknown>)['message']) || 'An unexpected error occurred.';
     }
     return 'An unexpected error occurred.';
   });
@@ -109,45 +107,37 @@ export class Products {
     this.productsResource.reload();
   }
 
-  // ── Delete functionality ──────────────────────────────────────────
+  // ── Delete functionality 
   readonly productToDelete = signal<Product | null>(null);
   readonly isDeleting = signal(false);
-  private readonly delete$ = new Subject<number>();
-
-  constructor() {
-    this.delete$.pipe(
-      switchMap((id) => {
-        this.isDeleting.set(true);
-        return this.productService.delete(id).pipe(
-          catchError((err) => {
-            this.toast.error(err.message || 'Failed to delete product.');
-            return EMPTY;
-          }),
-          finalize(() => {
-            this.isDeleting.set(false);
-            this.productToDelete.set(null);
-          })
-        );
-      }),
-      takeUntilDestroyed()
-    ).subscribe(() => {
-      this.toast.success('Product deleted successfully.');
-      this.productsResource.reload();
-    });
-  }
 
   requestDelete(product: Product): void {
     this.productToDelete.set(product);
   }
 
   cancelDelete(): void {
+    if (this.isDeleting()) return;
     this.productToDelete.set(null);
   }
 
   confirmDelete(): void {
     const product = this.productToDelete();
-    if (product) {
-      this.delete$.next(product.id);
-    }
+    if (!product || this.isDeleting()) return;
+
+    this.isDeleting.set(true);
+
+    this.productService.delete(product.id).subscribe({
+      next: () => {
+        this.isDeleting.set(false);
+        this.productToDelete.set(null); // Closes modal
+        this.toast.success('Product deleted successfully.');
+        this.productsResource.reload();
+      },
+      error: (err: unknown) => {
+        this.isDeleting.set(false);
+        const errorMsg = err instanceof Error ? err.message : 'Failed to delete product.';
+        this.toast.error(errorMsg);
+      }
+    });
   }
 }
