@@ -24,13 +24,19 @@ A full-featured product management SPA built with **Angular 21**, demonstrating 
 |:---:|:---:|
 | ![User View Product](docs/images/User%20View%20Product.png) | ![If Server is Down](docs/images/If%20server%20is%20Down.png) |
 
-| 404 Not Found |
-|:---:|
-| ![404 Product Not Found](docs/images/404%20Produt%20Not%20Found.png) |
+| 404 Not Found | Empty Search State |
+|:---:|:---:|
+| ![404 Product Not Found](docs/images/404%20Produt%20Not%20Found.png) | ![Empty Search State](docs/images/Searching%20for%20a%20product%20that%20is%20not%20found.png) |
 
 ---
 
 ## 🚀 Getting Started
+
+### Demo Account
+
+To access the live demo, use the provided test credentials:
+- **Email:** `jane@example.com` *(Use the email you registered or were provided)*
+- **Password:** `secret123`
 
 ### Prerequisites
 
@@ -184,11 +190,11 @@ When the backend rejects an expired or invalid token, the app **automatically lo
 
 After login, the application opens in **Admin Mode** by default:
 
-- **Server-side pagination** with a configurable page-size selector (`10 / 15 / 25 / 50`), defaulting to 15.
+- **Server-side pagination** with a configurable page-size selector (Rows for user clarity ) (`10 / 15 / 25 / 50`), defaulting to 15.
 - **Server-side search** supporting product name, SKU, and slug — with a visible result count ("Showing 1–15 of 42") and a **Reset** button to clear the search input.
 - **Active Status filter** rendered as clickable chips (`All / Active / Inactive`) instead of a `<select>` dropdown — fewer clicks, more visible state.
 - A **responsive data table** displaying product thumbnail, name, SKU, status badge, stock level, price, and creation date.
-- Row-level **action buttons**: View, Edit, and Delete (with a Bootstrap confirmation modal).
+- Row-level (per page) **action buttons**: View, Edit, and Delete (with a Bootstrap confirmation modal).
 
 ### 5. User View — Product Catalog
 
